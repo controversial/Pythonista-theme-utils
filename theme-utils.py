@@ -111,13 +111,19 @@ def _style_ui(view,respect_changes=False):
 
 	# These should have background colors the same as the background
 	bgtypes=(
-		ui.View, ui.Label, ui.ImageView, ui.ScrollView, ui.NavigationView, ui.TableView, ui.ActivityIndicator,ui.WebView,ui.Slider
+		ui.View, ui.Label, ui.ImageView, ui.ScrollView, ui.NavigationView, ui.TableView, ui.WebView
+	)
+	# These should have clear backgrounds
+	cleartypes=(
+		ui.ActivityIndicator, ui.Slider, ui.DatePicker, ui.Switch
 	)
 	if any([type(view)==t for t in bgtypes]): #Is the view in question one of the bgtypes
-		bg=colors[0]
+		bg=colors[0] # Background blend
+	elif any([type(view)==t for t in cleartypes]): # Is the view in question one of the clear types
+		bg=(0,0,0,0) # Background clear
 	# Elements like a button or a TextField should stand out from the background
-	else:
-		bg=colors[2]
+	else: # Other
+		bg=colors[2] # Background contrast
 	
 	# Values are only changed if they have not been already set
 	#Background
@@ -132,7 +138,9 @@ def _style_ui(view,respect_changes=False):
 	#Border color
 	if ignore_changes or view.border_color == (0,0,0,1):
 		view.border_color=colors[3] # This is the default
-
+	if ignore_changes and theme_is_dark(): # Color for text on labels/inputs
+		view.text_color = '#cccccc'
+	
 def style_ui(view,respect_changes=False):
 	'''Recursively style a view and its children according to the current theme. When ignore_changes is true, any changes already made are respected, and not changed '''
 	_style_ui(view,respect_changes)
