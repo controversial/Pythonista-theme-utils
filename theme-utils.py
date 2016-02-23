@@ -138,8 +138,14 @@ def _style_ui(view,respect_changes=False):
 	#Border color
 	if ignore_changes or view.border_color == (0,0,0,1):
 		view.border_color=colors[3] # This is the default
-	if ignore_changes and theme_is_dark(): # Color for text on labels/inputs
+	# Color for text on Labels/TextFields/TextViews with dark theme
+	if ignore_changes and theme_is_dark() and isinstance(view,(ui.TextField,ui.TextView,ui.Label)): 
 		view.text_color = '#cccccc'
+	#Color for text on DatePickers with dark theme
+	if theme_is_dark() and type(view)==ui.DatePicker:
+		o=ObjCInstance(view)
+		color = ObjCClass('UIColor').colorWithHexString_('cccccc')
+		o.setValue_forKey_(color,'textColor')
 	
 def style_ui(view,respect_changes=False):
 	'''Recursively style a view and its children according to the current theme. When ignore_changes is true, any changes already made are respected, and not changed '''
